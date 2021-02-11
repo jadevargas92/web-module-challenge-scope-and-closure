@@ -28,11 +28,16 @@ console.log(processFirstItem(['foo','bar'],function(str){return str+str}));
   Study the code for counter1 and counter2, then answer the questions below.
   
   1. What is the difference between counter1 and counter2?
+- Counter 1 contains a closure - the funtion counter. Counter is reaching into its lexical scope into the outer function (counterMaker) to utilize variable count.
+- Counter 2 is reaching out to the global scope.
   
   2. Which of the two uses a closure? How can you tell?
-  
+  - counter 1 is a closure because it is a function inside of a function. It accesses it's lexical scope while being executed OUTSIDE of its lexical scope (the const coutner1 = counterMaker())
+  - Counter 2 is reaching outside its own scope for the variable that is not defined in its own scope, so technically the variable is in the global scope (kind of like a closure)
   3. In what scenario would the counter1 code be preferable? In what scenario would 
-     counter2 be better?  
+     counter2 be better? 
+  - When trying to protect certain private data, the first one would be better. 
+  - Counter 2 would be better whenever count would need to be a global variable for lots of functions.
 */
 
 // counter1 code
@@ -63,7 +68,7 @@ NOTE: This will be a callback function for the tasks below
 */
 
 function inning(/*Code Here*/){
-    /*Code Here*/
+  return Math.floor(Math.random() * 3);
 }
 
 
@@ -76,13 +81,22 @@ Use the finalScore function below to do the following:
   
   For example: invoking finalScore(inning, 9) might return this object:
 {
-  "Home": 11,
+  "Home": 11,d 
   "Away": 5
 }
 */ 
 
-function finalScore(/*code Here*/){
-  /*Code Here*/
+function finalScore(callbackFunction, inningsPlayed){
+  let home = 0;
+  let away = 0;
+  for (let i = 0; i < inningsPlayed; i++) {
+    home = home + callbackFunction();
+    away = away + callbackFunction();
+  }
+  return {
+    Home: home,
+    Away: away
+  }
 }
 
 /* ⚾️⚾️⚾️ Task 4: getInningScore() ⚾️⚾️⚾️
@@ -90,8 +104,11 @@ Use the getInningScore() function below to do the following:
   1. Receive a callback function - you will pass in the inning function from task 2 as your argument 
   2. Return an object with a score for home and a score for away that populates from invoking the inning callback function */
 
-function getInningScore(/*Your Code Here */) {
-  /*Your Code Here */
+function getInningScore(callbackFunction) {
+  return {
+    Home: callbackFunction(),
+    Away: callbackFunction()
+  }
 }
 
 
@@ -136,8 +153,26 @@ Use the scoreboard function below to do the following:
 ]  
   */
 
-function scoreboard(/* CODE HERE */) {
-  /* CODE HERE */
+function scoreboard(cbOneInningScore, cbInning, numOfInnings) {
+  let scoreboardArray = [];
+  let finalHome = 0;
+  let finalAway = 0;
+  for (let i = 1; i <= numOfInnings; i++){
+    let currentInningHome = cbOneInningScore(cbInning)['Home'];
+    let currentInningAway = cbOneInningScore(cbInning)['Away'];
+    scoreboardArray.push(`Inning ${i}: Away ${currentInningAway} - Home ${currentInningHome}`)
+    finalHome = finalHome + currentInningHome;
+    finalAway = finalAway + currentInningAway;
+  }
+  if (finalHome === finalAway) {
+    scoreboardArray.push(`This game will require extra innings: Away ${finalAway} - Home ${finalHome}`)
+    console.log(scoreboardArray);
+    return scoreboardArray;
+  } else {
+    scoreboardArray.push(`Final Score: Away ${finalAway} - Home ${finalHome}`)
+    console.log(scoreboardArray);
+    return scoreboardArray;
+  }
 }
 
 
